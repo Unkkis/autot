@@ -6,10 +6,20 @@
 <meta charset="ISO-8859-1">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <title>Listaa autot</title>
+<style>
+.oikealle{
+	text-align: right;
+}
+</style>
 </head>
 <body>
 <table id="listaus">
 	<thead>
+		<tr>
+			<th class="oikealle">Hakusana:</th>
+			<th colspan="2"><input type="text" id="hakusana"></th>
+			<th><input type="button" value="hae" id="hakunappi"></th>
+		</tr>	
 		<tr>
 			<th>Rekisterinumero</th>
 			<th>Merkki</th>
@@ -22,21 +32,36 @@
 </table>
 
 <script>
-$ (document).ready(function() {
-	$.ajax({url:"autot", type:"GET", datatype:"json", success:function(result){
-		$.each(result.autot, function(i, field){
-			var htmlStr;
-			htmlStr+="<tr>";
-			htmlStr+="<td>"+field.rekno+"</td>";
-			htmlStr+="<td>"+field.merkki+"</td>";
-			htmlStr+="<td>"+field.malli+"</td>";
-			htmlStr+="<td>"+field.vuosi+"</td>";
-			htmlStr+="</tr>";
-			$("#listaus tbody").append(htmlStr);
-		});
-	}});
+$(document).ready(function(){
 	
-});
+	haeAutot();
+	$("#hakunappi").click(function(){		
+		haeAutot();
+	});
+	$(document.body).on("keydown", function(event){
+		  if(event.which==13){ //Enteriä painettu, ajetaan haku
+			  haeAutot();
+		  }
+	});
+	$("#hakusana").focus();//viedään kursori hakusana-kenttään sivun latauksen yhteydessä
+});	
+
+function haeAutot(){
+	$("#listaus tbody").empty();
+	$.ajax({url:"autot/"+$("#hakusana").val(), type:"GET", dataType:"json", success:function(result){//Funktio palauttaa tiedot json-objektina		
+		$.each(result.autot, function(i, field){  
+        	var htmlStr;
+        	htmlStr+="<tr>";
+        	htmlStr+="<td>"+field.rekno+"</td>";
+        	htmlStr+="<td>"+field.merkki+"</td>";
+        	htmlStr+="<td>"+field.malli+"</td>";
+        	htmlStr+="<td>"+field.vuosi+"</td>";  
+        	htmlStr+="</tr>";
+        	$("#listaus tbody").append(htmlStr);
+        });	
+    }});
+}
+
 </script>
 </body>
 </html>
