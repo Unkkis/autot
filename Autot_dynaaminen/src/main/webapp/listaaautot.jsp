@@ -16,6 +16,9 @@
 <table id="listaus">
 	<thead>
 		<tr>
+		<th colspan="5" class="oikealle"><span id="uusiAuto">Lis‰‰ uusi auto</span></th>
+		</tr>
+		<tr>
 			<th class="oikealle">Hakusana:</th>
 			<th colspan="2"><input type="text" id="hakusana"></th>
 			<th><input type="button" value="hae" id="hakunappi"></th>
@@ -33,6 +36,10 @@
 
 <script>
 $(document).ready(function(){
+	
+	$("#uusiAuto").click(function(){
+		document.location="lisaaauto.jsp";
+	})
 	
 	haeAutot();
 	$("#hakunappi").click(function(){		
