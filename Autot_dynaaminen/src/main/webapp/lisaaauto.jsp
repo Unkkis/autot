@@ -27,7 +27,7 @@
 		</thead>
 		<tbody>
 			<tr>
-				<td><input type="text" name="rekNo" id="rekNo"></td>
+				<td><input type="text" name="rekNo" id="rekNo" value=""></td>
 				<td><input type="text" name="merkki" id="merkki"></td>
 				<td><input type="text" name="malli" id="malli"></td>
 				<td><input type="text" name="vuosi" id="vuosi"></td> 
@@ -40,6 +40,79 @@
 
 </body>
 <script>
-$
+$(document).ready(function(){
+	$("#takaisin").click(function(){
+		document.location="listaaautot.jsp";
+	});	
+	$("#takaisin").hover(function(){
+		$(this).css("background-color", "#cccccc");
+	},
+	function(){
+		$(this).css("background-color", "blue");
+	});
+	$("#tiedot").validate({						
+		rules: {
+			rekNo:  {
+				required: true,
+				minlength: 3				
+			},	
+			merkki:  {
+				required: true,
+				minlength: 2				
+			},
+			malli:  {
+				required: true,
+				minlength: 1
+			},	
+			vuosi:  {
+				required: true,
+				number: true,
+				minlength: 4,
+				maxlength: 4,
+				min: 1900,
+				max: new Date().getFullYear()+1 //Auto voi olla ensivuoden mallia
+			}	
+		},
+		messages: {
+			rekNo: {     
+				required: "Puuttuu",
+				minlength: "Liian lyhyt"			
+			},
+			merkki: {
+				required: "Puuttuu",
+				minlength: "Liian lyhyt"
+			},
+			malli: {
+				required: "Puuttuu",
+				minlength: "Liian lyhyt"
+			},
+			vuosi: {
+				required: "Puuttuu",
+				number: "Ei kelpaa",
+				minlength: "Liian lyhyt",
+				maxlength: "Liian pitk‰",
+				min: "Liian pieni",
+				max: "Liian suuri"
+			}
+		},			
+		submitHandler: function(form) {	
+			lisaaTiedot();
+			
+		}		
+	}); 
+});
+function lisaaTiedot(){
+	var formJsonStr = formDataJsonStr($("#tiedot").serializeArray()); //muutetaan lomakkeen tiedot json-stringiksi
+	$.ajax({url:"autot", data:formJsonStr, type:"POST", dataType:"json", success:function(result) { //result on joko {"response:1"} tai {"response:0"}       
+		if(result.response==0){
+      	$("#ilmo").html("Auton lis‰‰minen ep‰onnistui.");
+      	return true;
+      }else if(result.response==1){			
+      	$("#ilmo").html("Auton lis‰‰minen onnistui.");
+      	$("#rekNo, #merkki, #malli, #vuosi").val("");
+		}
+  }});	
+}
+
 </script>
 </html>

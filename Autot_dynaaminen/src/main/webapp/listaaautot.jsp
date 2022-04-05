@@ -5,18 +5,15 @@
 <head>
 <meta charset="ISO-8859-1">
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="css/main.css">
 <title>Listaa autot</title>
-<style>
-.oikealle{
-	text-align: right;
-}
-</style>
+
 </head>
 <body>
 <table id="listaus">
 	<thead>
 		<tr>
-		<th colspan="5" class="oikealle"><span id="uusiAuto">Lisää uusi auto</span></th>
+		<th colspan="4" class="oikealle"><span id="uusiAuto">Lisää uusi auto</span></th>
 		</tr>
 		<tr>
 			<th class="oikealle">Hakusana:</th>

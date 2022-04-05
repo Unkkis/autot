@@ -41,6 +41,20 @@ public class Autot extends HttpServlet {
 	
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("Autot.doPost()");
+		JSONObject jsonObj = new JsonStrToObj().convert(request); //Muutetaan kutsun mukana tuleva json-string json-objektiksi	
+		Auto auto = new Auto();
+		auto.setRekno(jsonObj.getString("rekNo"));
+		auto.setMerkki(jsonObj.getString("merkki"));
+		auto.setMalli(jsonObj.getString("malli"));
+		auto.setVuosi(jsonObj.getInt("vuosi"));
+		response.setContentType("application/json");
+		PrintWriter out = response.getWriter();
+		Dao dao = new Dao();			
+		if(dao.lisaaAuto(auto)){ //metodi palauttaa true/false
+			out.println("{\"response\":1}");  //Auton lis‰‰minen onnistui {"response":1}
+		}else{
+			out.println("{\"response\":0}");  //Auton lis‰‰minen ep‰onnistui {"response":0}
+		}
 	}
 
 	
