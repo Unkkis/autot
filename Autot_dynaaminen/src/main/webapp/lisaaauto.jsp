@@ -113,6 +113,5 @@ function lisaaTiedot(){
 		}
   }});	
 }
-
 </script>
 </html>

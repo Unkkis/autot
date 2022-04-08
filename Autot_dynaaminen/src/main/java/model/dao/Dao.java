@@ -103,4 +103,21 @@ public class Dao {
 		}				
 		return paluuArvo;
 	}
+	public boolean poistaAuto(String rekNo) {
+		boolean paluuArvo = true;
+		sql="DELETE FROM autot WHERE rekNo=?";
+		try {
+			con =yhdista();
+			stmtPrep=con.prepareStatement(sql);
+			stmtPrep.setString(1, rekNo);
+			stmtPrep.executeUpdate();
+			con.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+			paluuArvo=false;
+		}
+		
+		
+		return paluuArvo;
+	}
 }

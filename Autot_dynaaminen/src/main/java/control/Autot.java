@@ -23,7 +23,6 @@ public class Autot extends HttpServlet {
        System.out.println("Autot.Autot()");
     }
 
-	
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("Autot.doGet()");
 		String pathInfo = request.getPathInfo();	//haetaan kutsun polkutiedot, esim. /audi			
@@ -65,6 +64,17 @@ public class Autot extends HttpServlet {
 	
 	protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("Autot.doDelete()");
+		String pathInfo = request.getPathInfo();	//haetaan kutsun polkutiedot, esim. /AAA-111		
+		System.out.println("polku: "+pathInfo);	
+		String poistettavaRekno = pathInfo.replace("/", "");
+		response.setContentType("application/json");
+		PrintWriter out = response.getWriter();
+		Dao dao = new Dao();			
+		if(dao.poistaAuto(poistettavaRekno)){ //metodi palauttaa true/false
+			out.println("{\"response\":1}");  //Auton poistaminen onnistui {"response":1}
+		}else{
+			out.println("{\"response\":0}");  //Auton poistaminen epäonnistui {"response":0}
+		}
 	}
 
 }

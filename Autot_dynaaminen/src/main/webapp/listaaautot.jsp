@@ -13,18 +13,19 @@
 <table id="listaus">
 	<thead>
 		<tr>
-		<th colspan="4" class="oikealle"><span id="uusiAuto">Lis‰‰ uusi auto</span></th>
+		<th colspan="5" class="oikealle"><span id="uusiAuto">Lis‰‰ uusi auto</span></th>
 		</tr>
 		<tr>
 			<th class="oikealle">Hakusana:</th>
 			<th colspan="2"><input type="text" id="hakusana"></th>
-			<th><input type="button" value="hae" id="hakunappi"></th>
+			<th colspan ="2"><input type="button" value="Hae" id="hakunappi"></th>
 		</tr>	
 		<tr>
 			<th>Rekisterinumero</th>
 			<th>Merkki</th>
 			<th>Malli</th>
 			<th>Vuosi</th>
+			<th></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -55,17 +56,31 @@ function haeAutot(){
 	$.ajax({url:"autot/"+$("#hakusana").val(), type:"GET", dataType:"json", success:function(result){//Funktio palauttaa tiedot json-objektina		
 		$.each(result.autot, function(i, field){  
         	var htmlStr;
-        	htmlStr+="<tr>";
+        	htmlStr+="<tr id='rivi_"+field.rekno+"'>";
         	htmlStr+="<td>"+field.rekno+"</td>";
         	htmlStr+="<td>"+field.merkki+"</td>";
         	htmlStr+="<td>"+field.malli+"</td>";
-        	htmlStr+="<td>"+field.vuosi+"</td>";  
+        	htmlStr+="<td>"+field.vuosi+"</td>";
+        	htmlStr+="<td><span class='poista' onclick=poista('"+field.rekno+"')>Poista</span></td>";
         	htmlStr+="</tr>";
         	$("#listaus tbody").append(htmlStr);
         });	
     }});
 }
-
+function poista(rekno){
+	if(confirm("Poista auto " + rekno + "?")){
+		$.ajax({url:"autot/"+rekno, type:"DELETE", dataType:"json", success:function(result){//Funktio palauttaa tiedot json-objektina
+			if(result.response==0){
+				alert("Auton " + rekno + " poisto ep‰onnistui.");
+			}else if(result.response==1){
+				$("#rivi_"+rekno).css("background-color", "red");
+				alert("Auton " + rekno + " poisto onnistui.");
+				haeAutot();
+			}
+						
+		}});
+	}	
+}
 </script>
 </body>
 </html>
