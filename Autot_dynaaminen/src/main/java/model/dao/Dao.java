@@ -120,4 +120,46 @@ public class Dao {
 		
 		return paluuArvo;
 	}
+	public Auto etsiAuto(String rekno) {
+		Auto auto = null;
+		sql = "SELECT * FROM autot WHERE rekno=?";
+		try {
+			con = yhdista();
+			stmtPrep=con.prepareStatement(sql);
+			stmtPrep.setString(1, rekno);
+			rs = stmtPrep.executeQuery();
+			if(rs.isBeforeFirst()) {
+				rs.next();
+				auto = new Auto();
+				auto.setRekno(rs.getString(1));
+				auto.setMerkki(rs.getString(2));
+				auto.setMalli(rs.getString(3));
+				auto.setVuosi(rs.getInt(4));
+			}
+			con.close();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return auto;
+	}
+	public boolean muutaAuto(Auto auto, String rekNo) {
+		boolean paluuArvo=true;
+		sql="UPDATE autot SET rekNo=?, merkki=?, malli=?, vuosi=? WHERE rekno=?";						  
+		try {
+			con = yhdista();
+			stmtPrep=con.prepareStatement(sql); 
+			stmtPrep.setString(1, auto.getRekno());
+			stmtPrep.setString(2, auto.getMerkki());
+			stmtPrep.setString(3, auto.getMalli());
+			stmtPrep.setInt(4, auto.getVuosi());
+			stmtPrep.setString(5, rekNo);
+			stmtPrep.executeUpdate();
+	        con.close();
+		} catch (Exception e) {				
+			e.printStackTrace();
+			paluuArvo=false;
+		}				
+		return paluuArvo;
+	}
 }

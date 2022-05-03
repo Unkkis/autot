@@ -23,15 +23,34 @@ public class Autot extends HttpServlet {
        System.out.println("Autot.Autot()");
     }
 
+    //haetaan autojen tiedot
+    //GET /autot{hakusana}
+    //GET /autot/haeyksi/rekno
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("Autot.doGet()");
 		String pathInfo = request.getPathInfo();	//haetaan kutsun polkutiedot, esim. /audi			
 		System.out.println("polku: "+pathInfo);	
-		String hakusana = pathInfo.replace("/", "");
 		Dao dao = new Dao();
-		ArrayList<Auto> autot = dao.listaaKaikki(hakusana);
-		System.out.println(autot);
-		String strJSON = new JSONObject().put("autot", autot).toString();	
+		ArrayList<Auto> autot;
+		String strJSON="";
+		if(pathInfo==null) {//haetaan kaikki autot
+			autot = dao.listaaKaikki();
+			strJSON = new JSONObject().put("autot", autot).toString();
+		}else if (pathInfo.indexOf("haeyksi")!=-1) {//polussa on sana "haeyksi", eli haetaan yhden auton tiedot
+			String rekno = pathInfo.replace("/haeyksi/", ""); //poistataan polusta "haeyksi", jolloin j‰‰ vain rekisterinumero
+			Auto auto = dao.etsiAuto(rekno);
+			JSONObject JSON = new JSONObject();
+			JSON.put("merkki", auto.getMerkki());
+			JSON.put("malli", auto.getMalli());
+			JSON.put("vuosi", auto.getVuosi());
+			JSON.put("rekno", auto.getRekno());
+			strJSON = JSON.toString();
+		}else {
+			String hakusana = pathInfo.replace("/", "");
+			autot = dao.listaaKaikki(hakusana);
+			strJSON = new JSONObject().put("autot", autot).toString();
+		}
+		System.out.println(strJSON);
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
 		out.println(strJSON);		
@@ -59,6 +78,21 @@ public class Autot extends HttpServlet {
 	
 	protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		System.out.println("Autot.doPut()");
+		JSONObject jsonObj = new JsonStrToObj().convert(request); //Muutetaan kutsun mukana tuleva json-string json-objektiksi	
+		String vanharekno = jsonObj.getString("vanharekno");
+		Auto auto = new Auto();
+		auto.setRekno(jsonObj.getString("rekNo"));
+		auto.setMerkki(jsonObj.getString("merkki"));
+		auto.setMalli(jsonObj.getString("malli"));
+		auto.setVuosi(jsonObj.getInt("vuosi"));
+		response.setContentType("application/json");
+		PrintWriter out = response.getWriter();
+		Dao dao = new Dao();			
+		if(dao.muutaAuto(auto, vanharekno)){ //metodi palauttaa true/false
+			out.println("{\"response\":1}");  //Auton p‰ivitt‰minen onnistui {"response":1}
+		}else{
+			out.println("{\"response\":0}");  //Auton p‰ivitt‰minen ep‰onnistui {"response":0}
+		}
 	}
 
 	
